@@ -99,7 +99,20 @@ This gives us the basic data used on the app's main screen.   The app also makes
   
 ```json
 {
-	"harvi": []
+  "harvi": [
+    {
+      "sno": 10077777,
+      "dat": "07-06-2019",
+      "tim": "12:57:11",
+      "ectp1": 176,
+      "ectt1": "Grid",
+      "ectt2": "None",
+      "ectt3": "None",
+      "ect1p": 1,
+      "ect2p": 1,
+      "ect3p": 1
+    }
+  ]
 }
 ```
 
