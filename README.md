@@ -155,6 +155,8 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
+**NOTE - the Eddi response above does not include a "div" property.  This response was captured when the eddi was not diverting.  It looks like properties that have the value zero are dropped from the object. Assuming that this is the same for Zappi too. **
+
 
 ### Zappi
 
@@ -188,7 +190,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 }
 ```
 
-### Eddie Boost Time
+### Eddi Boost Time
 
 `https://myenergi.net/cgi-boost-time-E10088888`
 
