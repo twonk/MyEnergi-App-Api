@@ -560,6 +560,25 @@ All requests return this
 }
 ```
 
+#### Minimum Green Level 60%
+`https://myenergi.net/cgi-set-min-green-Z10077777-60`
+returns
+```json
+{
+	"mgl": 60
+}
+```
+
+#### Minimum Green Level 100%
+`https://myenergi.net/cgi-set-min-green-Z10077777-100`
+returns
+```json
+{
+	"mgl": 100
+}
+```
+
+
 
 ### Eddi
 
@@ -581,7 +600,6 @@ All requests return this
 	"statustext": ""
 }
 ```
-
 
 ## Still to come... 
 
