@@ -268,6 +268,42 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
+### Zappi Boost Times
+
+`https://myenergi.net/cgi-boost-time-Z10077777`
+```json
+{
+	"boost_times": [{
+		"slt": 11,		//Slot
+		"bsh": 14,		//boost start hour
+		"bsm": 0,		//boost start minute
+		"bdh": 0,		//boost duration hour
+		"bdm": 15,		//boost duration minute
+		"bdd": "01111111"	//boost days of week Monday through Sunday
+	}, {
+		"slt": 12,
+		"bsh": 14,
+		"bsm": 0,
+		"bdh": 0,
+		"bdm": 0,
+		"bdd": "00000000"
+	}, {
+		"slt": 13,
+		"bsh": 0,
+		"bsm": 0,
+		"bdh": 0,
+		"bdm": 0,
+		"bdd": "00000000"
+	}, {
+		"slt": 14,
+		"bsh": 0,
+		"bsm": 0,
+		"bdh": 0,
+		"bdm": 0,
+		"bdd": "00000000"
+	}]
+}
+```
 
 ### Historic Data
 
@@ -351,13 +387,35 @@ Data from later in the array as an example.
 
 ##### Zappi
 
-`https://myenergi.net/cgi-jday-Z10077777-2019-6-7`
+`https://myenergi.net/cgi-jday-Z10077777-2019-6-8`
 
-Currently returns no data - perhaps due to the pending firmware update for the zappi, or due to me not charging
+**response truncated**
+
 ```json
 {
-	"U10077777": []
-}
+	"U10077777": [{
+		"dow": "Sat",
+		"dom": 8,
+		"mon": 6,
+		"yr": 2019,
+		"imp": 42900,
+		"gen": 180,
+		"v1": 2448,
+		"frq": 5007,
+		"nect1": 42900
+	}, {
+		"min": 1,
+		"dow": "Sat",
+		"dom": 8,
+		"mon": 6,
+		"yr": 2019,
+		"imp": 42900,
+		"gen": 180,
+		"v1": 2446,
+		"frq": 5006,
+		"nect1": 42900
+	}, 
+...
 ```
 
 ####  Hourly
