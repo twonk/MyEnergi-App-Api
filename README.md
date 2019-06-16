@@ -561,6 +561,16 @@ To change the Zappi mode between Fast, Eco, Eco+  call these endpoints.   Serial
 #### Eco+
 `https://myenergi.net/cgi-zappi-mode-Z10077777-3-0-0-0000`
 
+#### Boost 5KWh
+`https://myenergi.net/cgi-zappi-mode-Z10077777-0-10-5-0000`
+
+where 0 is Boost - 10 is Boost Mode - 5 is the KWh to add
+
+#### Smart Boost 5KWh - complete by 2pm
+`https://myenergi.net/cgi-zappi-mode-Z10077777-0-11-5-1400`  
+
+where 0 is Boost - 11 is Smart Boost Mode - 5 is the KWh to add, 1400 is the time the boost should complete.
+
 All requests return this
 ```json
 {
