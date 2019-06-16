@@ -5,6 +5,13 @@ Myenergi have released a mobile app to view and control their Zappi and Eddi pro
 
 This repository will be used to document my investigation into the API the app is using, so that the data and calls may be used in my own Home Automation system.
 
+With thanks to members of the myenergi.info forum:
+  * sashton
+  * fintan.farrell
+  * MilesB
+
+who have contributed updates, and to the folks at MyEnergi who haven't officialy sanctioned this investigation but havent asked us to stop either.
+
 ## Tools Used
   * Myenergi iOS app  (http://myenergi.info)
   * Charles Proxy (https://www.charlesproxy.com)
@@ -35,31 +42,31 @@ The server responds with a json object:
 ```json
 {
 	"eddi": [{
-		"dat": "07-06-2019",
-		"tim": "07:28:45",
-		"div": 928,
-		"ectp1": -7,
-		"ectp2": 6,
-		"ectt1": "Grid",
-		"ectt2": "Generation",
-		"frq": 50.07,
-		"gen": 2054,
-		"grd": 969,
+		"dat": "07-06-2019",		//date
+		"tim": "07:28:45",		//time
+		"div": 928,			//Diversion amount Watts (does not appear if zero)
+		"ectp1": -7,			//physical CT connection 1 value
+		"ectp2": 6,			//physical CT connection 2 value
+		"ectt1": "Grid",		//CT 1 name
+		"ectt2": "Generation",		//CT 2 name
+		"frq": 50.07,			//Supply Frequency
+		"gen": 2054,			//Generated Watts
+		"grd": 969,			//Watts from Grid?
 		"hno": 1,
-		"pha": 3,
-		"sno": 10088888,      //Changed Eddi Serial Number
-		"sta": 3,
+		"pha": 3,			//phase?
+		"sno": 10088888,      	//Changed Eddi Serial Number
+		"sta": 3,			
 		"vol": 4.1,
-		"ht1": "Tank 1",
-		"ht2": "Tank 2",
+		"ht1": "Tank 1",		//Heater 1 name
+		"ht2": "Tank 2",		//Heater 2 name
 		"tp1": -1,
 		"tp2": -1,
-		"pri": 2,
+		"pri": 2,			//priority>
 		"cmt": 254,
 		"r1a": 1,
 		"r2a": 1,
 		"r2b": 1,
-		"che": 1
+		"che": 1			//charge added in KWH
 	}]
 }
 ```
@@ -71,27 +78,28 @@ This gives us the basic data used on the app's main screen.   The app also makes
 ```json
 {
 	"zappi": [{
-		"dat": "07-06-2019",
-		"tim": "07:28:46",
-		"div": 1376,
-		"ectp1": 920,
-		"ectp2": 2143,
-		"ectt1": "Grid",
-		"ectt2": "Generation",
-		"frq": 49.95,
-		"gen": 2143,
-		"grd": 1017,
+		"dat": "07-06-2019",		//Date
+		"tim": "07:28:46",		//Time
+		"div": 1376,			//Diversion amount Watts (does not appear if zero)
+		"ectp1": 920,			//Physical CT connection 1 value Watts
+		"ectp2": 2143,			//Physical CT connection 2 value Watts
+		"ectt1": "Grid",		//CT 1 Name
+		"ectt2": "Generation",		//CT 2 Name
+		"frq": 49.95,			//Supply Frequency
+		"gen": 2143,			//Generated Watts
+		"grd": 1017,			//Watts from grid?
 		"pha": 1,
 		"sno": 10077777,        //Changed Zappi Serial Number
 		"sta": 3,
-		"vol": 244.4,
-		"pri": 1,
+		"vol": 244.4,			//Supply voltage
+		"pri": 1,			//priority
 		"cmt": 253,
-		"tbh": 9,
+		"tbh": 9,			
 		"tbm": 15,
 		"tbk": 90,
 		"pst": "A",
-		"mgl": 100
+		"mgl": 100,
+		"zmo": 3			//Zappi Mode - 1:Fast, 2:Eco, 3:Eco+
 	}]
 }
 ```
