@@ -100,7 +100,10 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"pst": "A",			//Status A:Disconnected, B1:Awaiting Surplus, B2:Charge Complete, C1: Transitory- unknown, C2: Charge Complete
 		"mgl": 100,
 		"zmo": 3,			//Zappi Mode - 1:Fast, 2:Eco, 3:Eco+
-		"che": 1			//Charge added in KWh
+		"che": 1,			//Charge added in KWh
+		"sbh": 14,			//Smart Boost Start Time Hour
+		"sbm": 15,			//Smart Boost Start Time Minute
+		"sbk": 5			//Smart Boost KWh to add
 	}]
 }
 ```
