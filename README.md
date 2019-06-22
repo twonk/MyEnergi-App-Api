@@ -574,6 +574,9 @@ where 0 is Boost - 10 is Boost Mode - 5 is the KWh to add
 
 where 0 is Boost - 11 is Smart Boost Mode - 5 is the KWh to add, 1400 is the time the boost should complete.
 
+#### Stop Boost
+`https://myenergi.net/cgi-zappi-mode-Z10077777-0-2-0-0000`
+
 All requests return this
 ```json
 {
