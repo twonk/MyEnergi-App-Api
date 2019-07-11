@@ -90,16 +90,16 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"grd": 1017,			//Watts from grid?
 		"pha": 1,
 		"sno": 10077777,        //Changed Zappi Serial Number
-		"sta": 3,
+		"sta": 3,                       //Status  1=Paused 3=Diverting/Charging 5=Complete
 		"vol": 244.4,			//Supply voltage
 		"pri": 1,			//priority
 		"cmt": 253,
 		"tbh": 9,			//boost hour?
 		"tbm": 15,			//boost minute?
 		"tbk": 90,			//boost KWh   - Note charge remaining for boost = tbk-che
-		"pst": "A",			//Status A:Disconnected, B1:Awaiting Surplus, B2:Charge Complete, C1: Transitory- unknown, C2: Charge Complete
+		"pst": "A",			//Status A=Disconnected, B1=Awaiting Surplus, B2=Charge Complete, C1= Transitory- unknown, C2= Charge Complete
 		"mgl": 100,
-		"zmo": 3,			//Zappi Mode - 1:Fast, 2:Eco, 3:Eco+
+		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+
 		"che": 1,			//Charge added in KWh
 		"sbh": 14,			//Smart Boost Start Time Hour
 		"sbm": 15,			//Smart Boost Start Time Minute
@@ -630,7 +630,7 @@ All requests return this
 
   *  Understanding of response properties
   *  Zappi manual / smart / timed boosts - will need to wait for new firmware as App shows car not connected, and will not allow manipulation.
-  *  Eddei timed boost
+  *  Eddi timed boost
   
   
 
