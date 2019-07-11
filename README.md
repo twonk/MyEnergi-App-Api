@@ -55,7 +55,7 @@ The server responds with a json object:
 		"hno": 1,
 		"pha": 3,			//phase?
 		"sno": 10088888,      	//Changed Eddi Serial Number
-		"sta": 3,			
+		"sta": 3,                       //Status 1=Paused, 3=Diverting, 5=Stopped/Max Temp Reached			
 		"vol": 4.1,
 		"ht1": "Tank 1",		//Heater 1 name
 		"ht2": "Tank 2",		//Heater 2 name
