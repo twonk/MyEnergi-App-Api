@@ -32,8 +32,101 @@ A simple curl command will do the same:
 
 `curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://myenergi.net/cgi-jstatus-E'`
 
+### Update
+```diff
+! Update!  A recent change to the myenergi server farm has split hubs between servers.  
+! An initial call to https://myenergi.net/cgi-jstatus-* will return an "asn" property which reflects the 
+! server to which all further calls should be made
+!
+! All URLs mentioned in this document are not qualified with the server number, but  should be updated 
+! to reference the individuals server connection.
+! see https://myenergi.info/myenergi-api-and-server-updates-28-08-2019-t556.html 
+! for more information.
+```
 
 ## Status Messages
+
+<https://myenergi.net/cgi-jstatus-*>
+
+Make an initial call to <https://myenergi.net/cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
+Example response:
+```json
+[ 
+   { 
+      "eddi":[ 
+         { 
+            "dat":"09-09-2019",
+            "tim":"16:55:50",
+            "ectp1":1,
+            "ectp2":1,
+            "ectt1":"Grid",
+            "ectt2":"Generation",
+            "frq":50.15,
+            "gen":304,
+            "grd":4429,
+            "hno":1,
+            "pha":3,
+            "sno":10088888,
+            "sta":1,
+            "vol":0.0,
+            "ht1":"Tank 1",
+            "ht2":"Tank 2",
+            "tp1":-1,
+            "tp2":-1,
+            "pri":2,
+            "cmt":254,
+            "r1a":1,
+            "r2a":1,
+            "r2b":1,
+            "che":1
+         }
+      ]
+   },
+   { 
+      "zappi":[ 
+         { 
+            "dat":"09-09-2019",
+            "tim":"16:55:50",
+            "div":3596,
+            "ectp1":4369,
+            "ectp2":295,
+            "ectt1":"Grid",
+            "ectt2":"Generation",
+            "frq":50.01,
+            "gen":304,
+            "grd":4429,
+            "pha":1,
+            "sno":10077777,
+            "sta":4,
+            "vol":240.2,
+            "pri":1,
+            "cmt":254,
+            "zmo":3,
+            "tbh":9,
+            "tbm":15,
+            "tbk":2,
+            "pst":"C2",
+            "bsm":1,
+            "mgl":100,
+            "sbh":14,
+            "sbk":5
+         }
+      ]
+   },
+   { 
+      "harvi":[ 
+
+      ]
+   },
+   { 
+      "asn":"s7.myenergi.net"
+   }
+]
+```
+```diff
+! All subsequent calls should be made to the asn value above
+```	
+
 
 https://myenergi.net/cgi-jstatus-E
 
