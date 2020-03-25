@@ -136,8 +136,8 @@ The server responds with a json object:
 		"frq": 50.07,			//Supply Frequency
 		"gen": 2054,			//Generated Watts
 		"grd": 969,			//Current Watts from Grid (negative if sending to grid)
-		"hno": 1,
-		"pha": 3,			//phase?
+		"hno": 1,           // Currently active heater (1/2)
+		"pha": 3,			//phase number or number of phases?
 		"sno": 10088888,      	//Changed Eddi Serial Number
 		"sta": 3,                       //Status 1=Paused, 3=Diverting, 4=Boost, 5=Stopped/Max Temp Reached
 		"vol": 239.5,             //Voltage out
@@ -151,7 +151,7 @@ The server responds with a json object:
 		"r2a": 1,
 		"r2b": 1,
 		"che": 1			//charge added in KWH
-        "bsm": 1,           // If boosting, the heater number which is being boosted
+        "bsm": 1,           // 1 if boosting
         "rbt": 3600,        // If boosting, the remaining boost time in of seconds 
 	}]
 }
