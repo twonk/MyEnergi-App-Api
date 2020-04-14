@@ -22,13 +22,13 @@ Charles Proxy is used as an SSL proxy between the app and the Myenergi server en
 
 The app makes https requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
 
-To build the base URL, get the last digit of the hub serial and make a base url like https://s<lastdigit>.myenergi.net/.
+**To build the base URL, get the last digit of the hub serial and make a base url like `https://s<lastdigit>.myenergi.net/`**
 
-An initial request is made to /cgi-jstatus-E the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
+An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
 
 To authenticate, pass the Myenergi hub's serial number as the username, and the password setup in the app as the password.
 
-A json response to the inital request to /cgi-jstatus-E can be obtained through a browser using the hub serial number and app password when requested for credentials.
+A json response to the inital request to `/cgi-jstatus-E` can be obtained through a browser using the hub serial number and app password when requested for credentials.
 
 A simple curl command will do the same:
 
@@ -37,7 +37,7 @@ A simple curl command will do the same:
 
 ## Status Messages
 
-</cgi-jstatus-*>
+`/cgi-jstatus-*`
 
 Make an initial call to </cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
 Example response:
@@ -119,7 +119,7 @@ Example response:
 ```	
 
 
-/cgi-jstatus-E
+`/cgi-jstatus-E`
 
 The server responds with a json object:
 
@@ -159,7 +159,7 @@ The server responds with a json object:
 
 This gives us the basic data used on the app's main screen.   The app also makes calls to 
 
-  * /cgi-jstatus-Z  (For Zappi data)
+  `/cgi-jstatus-Z`  (For Zappi data)
   
 ```json
 {
@@ -193,7 +193,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 	}]
 }
 ```
-  * /cgi-jstatus-H  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
+  `/cgi-jstatus-H`  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
   
 ```json
 {
