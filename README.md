@@ -22,33 +22,24 @@ Charles Proxy is used as an SSL proxy between the app and the Myenergi server en
 
 The app makes https requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
 
-An initial request is made to https://myenergi.net/cgi-jstatus-E the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
+To build the base URL, get the last digit of the hub serial and make a base url like https://s<lastdigit>.myenergi.net/.
+
+An initial request is made to /cgi-jstatus-E the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
 
 To authenticate, pass the Myenergi hub's serial number as the username, and the password setup in the app as the password.
 
-A json response to the inital request to https://myenergi.net/cgi-jstatus-E can be obtained through a browser using the hub serial number and app password when requested for credentials.
+A json response to the inital request to /cgi-jstatus-E can be obtained through a browser using the hub serial number and app password when requested for credentials.
 
 A simple curl command will do the same:
 
-`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://myenergi.net/cgi-jstatus-E'`
+`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>myenergi.net/cgi-jstatus-E'`
 
-### Update
-```diff
-! Update!  A recent change to the myenergi server farm has split hubs between servers.  
-! An initial call to https://myenergi.net/cgi-jstatus-* will return an "asn" property which reflects the 
-! server to which all further calls should be made
-!
-! All URLs mentioned in this document are not qualified with the server number, but  should be updated 
-! to reference the individuals server connection.
-! see https://myenergi.info/myenergi-api-and-server-updates-28-08-2019-t556.html 
-! for more information.
-```
 
 ## Status Messages
 
-<https://myenergi.net/cgi-jstatus-*>
+</cgi-jstatus-*>
 
-Make an initial call to <https://myenergi.net/cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
+Make an initial call to </cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
 Example response:
 ```json
 [ 
@@ -128,7 +119,7 @@ Example response:
 ```	
 
 
-https://myenergi.net/cgi-jstatus-E
+/cgi-jstatus-E
 
 The server responds with a json object:
 
@@ -144,12 +135,12 @@ The server responds with a json object:
 		"ectt2": "Generation",		//CT 2 name
 		"frq": 50.07,			//Supply Frequency
 		"gen": 2054,			//Generated Watts
-		"grd": 969,			//Watts from Grid?
-		"hno": 1,
-		"pha": 3,			//phase?
+		"grd": 969,			//Current Watts from Grid (negative if sending to grid)
+		"hno": 1,           // Currently active heater (1/2)
+		"pha": 3,			//phase number or number of phases?
 		"sno": 10088888,      	//Changed Eddi Serial Number
-		"sta": 3,                       //Status 1=Paused, 3=Diverting, 5=Stopped/Max Temp Reached			
-		"vol": 4.1,
+		"sta": 3,                       //Status 1=Paused, 3=Diverting, 4=Boost, 5=Stopped/Max Temp Reached
+		"vol": 239.5,             //Voltage out
 		"ht1": "Tank 1",		//Heater 1 name
 		"ht2": "Tank 2",		//Heater 2 name
 		"tp1": -1,
@@ -160,13 +151,15 @@ The server responds with a json object:
 		"r2a": 1,
 		"r2b": 1,
 		"che": 1			//charge added in KWH
+        "bsm": 1,           // 1 if boosting
+        "rbt": 3600,        // If boosting, the remaining boost time in of seconds 
 	}]
 }
 ```
 
 This gives us the basic data used on the app's main screen.   The app also makes calls to 
 
-  * https://myenergi.net/cgi-jstatus-Z  (For Zappi data)
+  * /cgi-jstatus-Z  (For Zappi data)
   
 ```json
 {
@@ -200,7 +193,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 	}]
 }
 ```
-  * https://myenergi.net/cgi-jstatus-H  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
+  * /cgi-jstatus-H  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
   
 ```json
 {
@@ -223,7 +216,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 
 In addition to these status requests, the App also makes repeated calls to 
 
-`https://myenergi.net/cgi-set-heater-priority-E10088888  `
+`/cgi-set-heater-priority-E10088888  `
 
 **Note - the last 8 digits of the request are my Eddi Serial Number - which can be found in the data returned from the call to cgi-jstatus-E**  
 
@@ -242,7 +235,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 
 ### Eddi
 
-`https://myenergi.net/cgi-jstatus-E10088888`
+`/cgi-jstatus-E10088888`
 
 ```json
 {
@@ -278,7 +271,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 
 ### Zappi
 
-`https://myenergi.net/cgi-jstatus-Z10077777`
+`/cgi-jstatus-Z10077777`
 
 ```json
 {
@@ -310,7 +303,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 
 ### Eddi Boost Time
 
-`https://myenergi.net/cgi-boost-time-E10088888`
+`/cgi-boost-time-E10088888`
 
 ```json
 {
@@ -373,9 +366,15 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
+#### Set boost times
+
+`cgi-boost-time-E10077777-<slot id>-<start time>-<duration>-<day spec>`
+- start time and duration are both numbers like `60*hours+minutes`
+- day spec is as bdd above
+
 ### Zappi Boost Times
 
-`https://myenergi.net/cgi-boost-time-Z10077777`
+`/cgi-boost-time-Z10077777`
 ```json
 {
 	"boost_times": [{
@@ -415,7 +414,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 #### Minute by Minute
 
 ##### Eddi
-`https://myenergi.net/cgi-jday-E10088888-2019-6-7`
+`/cgi-jday-E10088888-2019-6-7`
 
 **Response truncated**
 
@@ -492,7 +491,7 @@ Data from later in the array as an example.
 
 ##### Zappi
 
-`https://myenergi.net/cgi-jday-Z10077777-2019-6-8`
+`/cgi-jday-Z10077777-2019-6-8`
 
 **response truncated**
 
@@ -527,7 +526,7 @@ Data from later in the array as an example.
 
 ##### Eddie
 
-`https://myenergi.net/cgi-jdayhour-E10088888-2019-6-7`
+`/cgi-jdayhour-E10088888-2019-6-7`
 
 ```json
 {
@@ -631,7 +630,7 @@ Note missing hr property for first object in array
 
 ##### Zappi
 
-`https://myenergi.net/cgi-jdayhour-Z10077777-2019-6-6`
+`/cgi-jdayhour-Z10077777-2019-6-6`
 
 ```json
 {
@@ -649,26 +648,26 @@ No data.
 To change the Zappi mode between Fast, Eco, Eco+  call these endpoints.   Serial numbers are included in the URL - be sure to replace 10077777 with your Zappi Serial Number
 
 #### Fast
-`https://myenergi.net/cgi-zappi-mode-Z10077777-1-0-0-0000`
+`/cgi-zappi-mode-Z10077777-1-0-0-0000`
 
 #### Eco
-`https://myenergi.net/cgi-zappi-mode-Z10077777-2-0-0-0000`
+`/cgi-zappi-mode-Z10077777-2-0-0-0000`
 
 #### Eco+
-`https://myenergi.net/cgi-zappi-mode-Z10077777-3-0-0-0000`
+`/cgi-zappi-mode-Z10077777-3-0-0-0000`
 
 #### Boost 5KWh
-`https://myenergi.net/cgi-zappi-mode-Z10077777-0-10-5-0000`
+`/cgi-zappi-mode-Z10077777-0-10-5-0000`
 
 where 0 is Boost - 10 is Boost Mode - 5 is the KWh to add
 
 #### Smart Boost 5KWh - complete by 2pm
-`https://myenergi.net/cgi-zappi-mode-Z10077777-0-11-5-1400`  
+`/cgi-zappi-mode-Z10077777-0-11-5-1400`  
 
 where 0 is Boost - 11 is Smart Boost Mode - 5 is the KWh to add, 1400 is the time the boost should complete.
 
 #### Stop Boost
-`https://myenergi.net/cgi-zappi-mode-Z10077777-0-2-0-0000`
+`/cgi-zappi-mode-Z10077777-0-2-0-0000`
 
 All requests return this
 ```json
@@ -679,7 +678,7 @@ All requests return this
 ```
 
 #### Minimum Green Level 60%
-`https://myenergi.net/cgi-set-min-green-Z10077777-60`
+`/cgi-set-min-green-Z10077777-60`
 returns
 ```json
 {
@@ -688,7 +687,7 @@ returns
 ```
 
 #### Minimum Green Level 100%
-`https://myenergi.net/cgi-set-min-green-Z10077777-100`
+`/cgi-set-min-green-Z10077777-100`
 returns
 ```json
 {
@@ -698,18 +697,21 @@ returns
 
 
 
-### Eddi
+### Eddi Manual boost
 
-Eddi can be set to boost - Example endpoints.  Serial numbers are included in the URL - be sure to replace 10088888 with your Eddi Serial Number
+Eddi can be set to boost - Example endpoints.  Serial numbers are included in the URL - be sure to replace 10088888 with your Eddi Serial Number. The other options are:
+- 10 - Max KW to boost to (?)
+- 1/2 - heater number
+- minutes (set to 0 to cancel)
 
 #### 20 minute manual boost
-`https://myenergi.net/cgi-eddi-boost-E10088888-10-1-20`
+`/cgi-eddi-boost-E10088888-10-1-20`
 
 #### 60 minute manual boost
-`https://myenergi.net/cgi-eddi-boost-E10088888-10-1-60`
+`/cgi-eddi-boost-E10088888-10-1-60`
 
 #### Cancel boost
-`https://myenergi.net/cgi-eddi-boost-E10088888-1-1-0`
+`/cgi-eddi-boost-E10088888-1-1-0`
 
 All requests return this
 ```json
@@ -719,11 +721,16 @@ All requests return this
 }
 ```
 
+### Eddi heater priority
+
+Each Eddi can have 2 heaters attached. To get which one is the current one that has priority call `/cgi-set-heater-priority-E10088888  `
+
+The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the second heater have priority
+
 ## Still to come... 
 
   *  Understanding of response properties
   *  Zappi manual / smart / timed boosts - will need to wait for new firmware as App shows car not connected, and will not allow manipulation.
-  *  Eddi timed boost
   
   
 
