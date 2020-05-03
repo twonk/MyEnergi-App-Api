@@ -1,7 +1,8 @@
 # MyEnergi-App-Api
-## Investigation of the MyEnergi App 
 
-Myenergi have released a mobile app to view and control their Zappi and Eddi products.  A public API was not released.
+## Investigation of the myenergi app 
+
+myenergi have released a mobile app to view and control their Zappi and Eddi products. A public API was not released.
 
 This repository will be used to document my investigation into the API the app is using, so that the data and calls may be used in my own Home Automation system.
 
@@ -10,37 +11,39 @@ With thanks to members of the myenergi.info forum:
   * fintan.farrell
   * MilesB
 
-who have contributed updates, and to the folks at MyEnergi who haven't officialy sanctioned this investigation but havent asked us to stop either.
+who have contributed updates, and to the folks at myenergi who haven't officialy sanctioned this investigation but havent asked us to stop either.
 
 ## Tools Used
-  * Myenergi iOS app  (http://myenergi.info)
+
+  * myenergi iOS app  (http://myenergi.info)
   * Charles Proxy (https://www.charlesproxy.com)
 
-Charles Proxy is used as an SSL proxy between the app and the Myenergi server endpoint.
+Charles Proxy is used as an SSL proxy between the app and the myenergi server endpoint.
 
 ## Findings
 
-The app makes https requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
+The app makes HTTPS requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth".
 
 **To build the base URL, get the last digit of the hub serial and make a base url like `https://s<lastdigit>.myenergi.net/`**
 
-An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
+An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5".
 
-To authenticate, pass the Myenergi hub's serial number as the username, and the password setup in the app as the password.
+To authenticate, pass the myenergi hub's serial number as the username, and the password setup in the app as the password.
 
-A json response to the inital request to `/cgi-jstatus-E` can be obtained through a browser using the hub serial number and app password when requested for credentials.
+A JSON response to the inital request to `/cgi-jstatus-E` can be obtained through a browser using the hub serial number and app password when requested for credentials.
 
 A simple curl command will do the same:
 
-`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>myenergi.net/cgi-jstatus-E'`
-
+`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>.myenergi.net/cgi-jstatus-E'`
 
 ## Status Messages
 
 `/cgi-jstatus-*`
 
-Make an initial call to </cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
+Make an initial call to </cgi-jstatus-*> The response will return arrays of devices and the appropriate endpoint to issue all new calls against.
+
 Example response:
+
 ```json
 [ 
    { 
@@ -114,14 +117,14 @@ Example response:
    }
 ]
 ```
+
 ```diff
 ! All subsequent calls should be made to the asn value above
 ```	
 
-
 `/cgi-jstatus-E`
 
-The server responds with a json object:
+The server responds with a JSON object:
 
 ```json
 {
@@ -157,7 +160,7 @@ The server responds with a json object:
 }
 ```
 
-This gives us the basic data used on the app's main screen.   The app also makes calls to 
+This gives us the basic data used on the app's main screen. The app also makes calls to:
 
   `/cgi-jstatus-Z`  (For Zappi data)
   
@@ -193,7 +196,8 @@ This gives us the basic data used on the app's main screen.   The app also makes
 	}]
 }
 ```
-  `/cgi-jstatus-H`  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
+
+  `/cgi-jstatus-H`  (For Harvi data) - I do have a Harvi, but removed it from my installation and ran cat5 to the Zappi.
   
 ```json
 {
@@ -214,22 +218,22 @@ This gives us the basic data used on the app's main screen.   The app also makes
 }
 ```
 
-In addition to these status requests, the App also makes repeated calls to 
+In addition to these status requests, the App also makes repeated calls to:
 
-`/cgi-set-heater-priority-E10088888  `
+`/cgi-set-heater-priority-E10088888`
 
 **Note - the last 8 digits of the request are my Eddi Serial Number - which can be found in the data returned from the call to cgi-jstatus-E**  
 
 (I have included this in the Status section as it doesnt appear to set anything, but does return the hpri (Heater Priority?) and a cpm value)
 
-This returns
+This returns:
+
 ```json
 {
 	"hpri": 1,
 	"cpm": 15
 }
 ```
-
 
 Tapping the Zappi or Eddi icon on the main screen causes the app to call new end points relating to the appliance:
 
@@ -266,8 +270,8 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
-**NOTE - the Eddi response above does not include a "div" property.  This response was captured when the eddi was not diverting.  It looks like properties that have the value zero are dropped from the object. Assuming that this is the same for Zappi too. **
 
+**NOTE - the Eddi response above does not include a "div" property. This response was captured when the eddi was not diverting. It looks like properties that have the value zero are dropped from the object. Assuming that this is the same for Zappi too.**
 
 ### Zappi
 
@@ -366,6 +370,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
+
 #### Set boost times
 
 `cgi-boost-time-E10077777-<slot id>-<start time>-<duration>-<day spec>`
@@ -414,6 +419,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 #### Minute by Minute
 
 ##### Eddi
+
 `/cgi-jday-E10088888-2019-6-7`
 
 **Response truncated**
@@ -470,8 +476,11 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}, 
   ...
 ```
-The first object in the data array does not have a "min" property; - perhaps a bug as it looks like it is minute 0, not an overview of the whole day - this is repeated after minute 59.   Also note that after hour 0, the data objects include an "hr" property, which is not included in the first 60 elements on the array.
-Data from later in the array as an example.
+
+The first object in the data array does not have a "min" property; - perhaps a bug as it looks like it is minute 0, not an overview of the whole day - this is repeated after minute 59. Also note that after hour 0, the data objects include an "hr" property, which is not included in the first 60 elements on the array.
+
+Data from later in the array as an example:
+
 ```json
 {
 		"min": 14,
@@ -626,7 +635,8 @@ Data from later in the array as an example.
 	}]
 }
 ```
-Note missing hr property for first object in array
+
+Note missing hr property for first object in array.
 
 ##### Zappi
 
@@ -637,31 +647,35 @@ Note missing hr property for first object in array
 	"U10077777": []
 }
 ```
+
 No data.
-
-
 
 ## Control
 
 ### Zappi
 
-To change the Zappi mode between Fast, Eco, Eco+  call these endpoints.   Serial numbers are included in the URL - be sure to replace 10077777 with your Zappi Serial Number
+To change the Zappi mode between Fast, Eco, Eco+  call these endpoints. Serial numbers are included in the URL - be sure to replace 10077777 with your Zappi serial number.
 
 #### Fast
+
 `/cgi-zappi-mode-Z10077777-1-0-0-0000`
 
 #### Eco
+
 `/cgi-zappi-mode-Z10077777-2-0-0-0000`
 
 #### Eco+
+
 `/cgi-zappi-mode-Z10077777-3-0-0-0000`
 
 #### Boost 5KWh
+
 `/cgi-zappi-mode-Z10077777-0-10-5-0000`
 
-where 0 is Boost - 10 is Boost Mode - 5 is the KWh to add
+where 0 is Boost - 10 is Boost Mode - 5 is the KWh to add.
 
 #### Smart Boost 5KWh - complete by 2pm
+
 `/cgi-zappi-mode-Z10077777-0-11-5-1400`  
 
 where 0 is Boost - 11 is Smart Boost Mode - 5 is the KWh to add, 1400 is the time the boost should complete.
@@ -669,7 +683,8 @@ where 0 is Boost - 11 is Smart Boost Mode - 5 is the KWh to add, 1400 is the tim
 #### Stop Boost
 `/cgi-zappi-mode-Z10077777-0-2-0-0000`
 
-All requests return this
+All requests return this:
+
 ```json
 {
 	"status": 0,
@@ -678,8 +693,11 @@ All requests return this
 ```
 
 #### Minimum Green Level 60%
+
 `/cgi-set-min-green-Z10077777-60`
-returns
+
+returns:
+
 ```json
 {
 	"mgl": 60
@@ -687,15 +705,16 @@ returns
 ```
 
 #### Minimum Green Level 100%
+
 `/cgi-set-min-green-Z10077777-100`
-returns
+
+returns:
+
 ```json
 {
 	"mgl": 100
 }
 ```
-
-
 
 ### Eddi Manual boost
 
@@ -705,15 +724,19 @@ Eddi can be set to boost - Example endpoints.  Serial numbers are included in th
 - minutes (set to 0 to cancel)
 
 #### 20 minute manual boost
+
 `/cgi-eddi-boost-E10088888-10-1-20`
 
 #### 60 minute manual boost
+
 `/cgi-eddi-boost-E10088888-10-1-60`
 
 #### Cancel boost
+
 `/cgi-eddi-boost-E10088888-1-1-0`
 
-All requests return this
+All requests return this:
+
 ```json
 {
 	"status": 0,
@@ -723,15 +746,11 @@ All requests return this
 
 ### Eddi heater priority
 
-Each Eddi can have 2 heaters attached. To get which one is the current one that has priority call `/cgi-set-heater-priority-E10088888  `
+Each Eddi can have 2 heaters attached. To get which one is the current one that has priority call `/cgi-set-heater-priority-E10088888`
 
-The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the second heater have priority
+The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the second heater have priority.
 
 ## Still to come... 
 
-  *  Understanding of response properties
+  *  Understanding of response properties.
   *  Zappi manual / smart / timed boosts - will need to wait for new firmware as App shows car not connected, and will not allow manipulation.
-  
-  
-
-
