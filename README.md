@@ -1,5 +1,5 @@
 # MyEnergi-App-Api
-## Investigation of the MyEnergi App 
+## Investigation of the MyEnergi App
 
 Myenergi have released a mobile app to view and control their Zappi and Eddi products.  A public API was not released.
 
@@ -42,10 +42,10 @@ A simple curl command will do the same:
 Make an initial call to </cgi-jstatus-*> The response will return arrays of devices and the appropriate end point to issue all new calls against.
 Example response:
 ```json
-[ 
-   { 
-      "eddi":[ 
-         { 
+[
+   {
+      "eddi":[
+         {
             "dat":"09-09-2019",
             "tim":"16:55:50",
             "ectp1":1,
@@ -73,9 +73,9 @@ Example response:
          }
       ]
    },
-   { 
-      "zappi":[ 
-         { 
+   {
+      "zappi":[
+         {
             "dat":"09-09-2019",
             "tim":"16:55:50",
             "div":3596,
@@ -104,19 +104,19 @@ Example response:
          }
       ]
    },
-   { 
-      "harvi":[ 
+   {
+      "harvi":[
 
       ]
    },
-   { 
+   {
       "asn":"s7.myenergi.net"
    }
 ]
 ```
 ```diff
 ! All subsequent calls should be made to the asn value above
-```	
+```
 
 
 `/cgi-jstatus-E`
@@ -152,15 +152,15 @@ The server responds with a json object:
 		"r2b": 1,
 		"che": 1,			//charge added in KWH
                 "bsm": 1,                       // 1 if boosting
-                "rbt": 3600                     // If boosting, the remaining boost time in of seconds 
+                "rbt": 3600                     // If boosting, the remaining boost time in of seconds
 	}]
 }
 ```
 
-This gives us the basic data used on the app's main screen.   The app also makes calls to 
+This gives us the basic data used on the app's main screen.   The app also makes calls to
 
   `/cgi-jstatus-Z`  (For Zappi data)
-  
+
 ```json
 {
 	"zappi": [{
@@ -182,7 +182,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"frq": 49.95,			//Supply Frequency
 		"gen": 2143,			//Generated Watts
 		"grd": 1017,			//Watts from grid
-		"div": 1017,			//Diversion amount in Watts 
+		"div": 1017,			//Diversion amount in Watts
 		"pha": 1,                       //Single Phase or Three Phase
 		"sno": 10077777,                //Zappi Serial Number
 		"sta": 3,                       //Status  0=Fault/Startup, 1=Paused, 2=Demand Side Response, 3=Diverting/Charging, 4=Boost, 5=Complete
@@ -203,14 +203,14 @@ This gives us the basic data used on the app's main screen.   The app also makes
 }
 ```
   `/cgi-jstatus-H`  (for Harvi data)
-  
+
 ```json
 {
   "harvi": [
     {
       "sno": 10077777,       //Harvi Serial Number
-      "dat": "07-06-2019",   //Date 
-      "tim": "12:57:11",     //Time - UTC not timezone - Date and Time are time last update from devices was received 
+      "dat": "07-06-2019",   //Date
+      "tim": "12:57:11",     //Time - UTC not timezone - Date and Time are time last update from devices was received
       "ectp1": 176,          //CT1 Watts
       "ectp2": -18,          //CT2 Watts
       "ectp3": 2128,         //CT3 Watts
@@ -226,7 +226,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 }
 ```
 
-In addition to these status requests, the App also makes repeated calls to 
+In addition to these status requests, the App also makes repeated calls to
 
 `/cgi-set-heater-priority-E10088888  `
 
@@ -479,7 +479,7 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 		"frq": 4998,
 		"nect1": 60,
 		"nect2": 60
-	}, 
+	},
   ...
 ```
 The first object in the data array does not have a "min" property; - perhaps a bug as it looks like it is minute 0, not an overview of the whole day - this is repeated after minute 59.   Also note that after hour 0, the data objects include an "hr" property, which is not included in the first 60 elements on the array.
@@ -530,7 +530,7 @@ Data from later in the array as an example.
 		"v1": 2446,
 		"frq": 5006,
 		"nect1": 42900
-	}, 
+	},
 ...
 ```
 
@@ -739,70 +739,39 @@ Each Eddi can have 2 heaters attached. To get which one is the current one that 
 
 The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the second heater have priority
 
-## Return Codes 
+## Return Codes
 
 CODE	MEANING
  0	O.K. / Success
- 
 -1	Invalid ID – The unit or group cannot be found or the user does not have access rights to the ID.
-
 -2	Invalid DSR command sequence number. Valid write values or 1-15 inclusive. Valid read values are 0-15 inclusive.
-
 -3	No action taken. Command Sequence Number “csn” equals “err” for single unit. i.e. Command Sequence number is same as last.
-
 -4	Hub not found. No associated hub record for the unit.
-
 -5	Internal Error.
-
 -6	Invalid load value.
-
 -7	Year missing.
-
 -8	Month missing or invalid.
-
 -9	Day missing or invalid.
-
 -10	Hour missing or invalid.
-
 -11	Invalid TTL Value.
-
 -12	User not authorised to perform operation.
-
 -13	Serial No not found.
-
 -14	Missing or bad parameter.
-
 -15	Invalid password.
-
 -16	New passwords don’t match.
-
 -17	Invalid new password. Password must not contain “&”
-
 -18	New password is same as old password.
-
 -19	User not registered.
-
 -20	Minute missing or invalid
-
 -21	Slot missing or invalid
-
 -22	Priority bad or missing
-
 -23	Command not appropriate for device
-
 -24	Check period bad or missing
-
 -25	Min Green Level bad or missing
-
 -26	Busy – Server is already sending a command to the device.
-
 -27	Relay not fitted.
 
-## Still to come... 
+## Still to come...
 
   *  Understanding of response properties
   *  Zappi manual / smart / timed boosts - will need to wait for new firmware as App shows car not connected, and will not allow manipulation.
-  
-  
-
-
