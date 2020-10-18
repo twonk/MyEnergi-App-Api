@@ -136,11 +136,11 @@ The server responds with a json object:
 		"frq": 50.07,			//Supply Frequency
 		"gen": 2054,			//Generated Watts
 		"grd": 969,			//Current Watts from Grid (negative if sending to grid)
-		"hno": 1,           // Currently active heater (1/2)
+		"hno": 1,                       // Currently active heater (1/2)
 		"pha": 3,			//phase number or number of phases?
-		"sno": 10088888,      	//Changed Eddi Serial Number
+		"sno": 10088888,              	//Changed Eddi Serial Number
 		"sta": 3,                       //Status 1=Paused, 3=Diverting, 4=Boost, 5=Stopped/Max Temp Reached
-		"vol": 239.5,             //Voltage out
+		"vol": 239.5,                   //Voltage out
 		"ht1": "Tank 1",		//Heater 1 name
 		"ht2": "Tank 2",		//Heater 2 name
 		"tp1": -1,
@@ -150,9 +150,9 @@ The server responds with a json object:
 		"r1a": 1,
 		"r2a": 1,
 		"r2b": 1,
-		"che": 1			//charge added in KWH
-        "bsm": 1,           // 1 if boosting
-        "rbt": 3600,        // If boosting, the remaining boost time in of seconds 
+		"che": 1,			//charge added in KWH
+                "bsm": 1,                       // 1 if boosting
+                "rbt": 3600                     // If boosting, the remaining boost time in of seconds 
 	}]
 }
 ```
@@ -165,26 +165,35 @@ This gives us the basic data used on the app's main screen.   The app also makes
 {
 	"zappi": [{
 		"dat": "07-06-2019",		//Date
-		"tim": "07:28:46",		//Time
+		"tim": "07:28:46",		//Time - UTC not timezone - Date and Time are time last update from devices was received
 		"div": 1376,			//Diversion amount Watts (does not appear if zero)
 		"ectp1": 920,			//Physical CT connection 1 value Watts
 		"ectp2": 2143,			//Physical CT connection 2 value Watts
-		"ectt1": "Grid",		//CT 1 Name
-		"ectt2": "Generation",		//CT 2 Name
+		"ectp3": 2143,			//Physical CT connection 3 value Watts
+		"ectp4": 2143,			//Physical CT connection 4 value Watts
+		"ectp5": 2143,			//Physical CT connection 5 value Watts
+		"ectp6": 2143,			//Physical CT connection 6 value Watts
+		"ectt1": "Internal Load",	//CT 1 Name - will depend on setup Grid, Generation, AC Battery etc
+		"ectt2": "None",		//CT 2 Name
+		"ectt3": "None",		//CT 3 Name
+		"ectt4": "None",		//CT 4 Name
+		"ectt5": "None",		//CT 5 Name
+		"ectt6": "None",		//CT 6 Name
 		"frq": 49.95,			//Supply Frequency
 		"gen": 2143,			//Generated Watts
-		"grd": 1017,			//Watts from grid?
-		"pha": 1,
-		"sno": 10077777,        //Changed Zappi Serial Number
-		"sta": 3,                       //Status  1=Paused 3=Diverting/Charging 5=Complete
+		"grd": 1017,			//Watts from grid
+		"div": 1017,			//Diversion amount in Watts 
+		"pha": 1,                       //Single Phase or Three Phase
+		"sno": 10077777,                //Zappi Serial Number
+		"sta": 3,                       //Status  0=Fault/Startup, 1=Paused, 2=Demand Side Response, 3=Diverting/Charging, 4=Boost, 5=Complete
 		"vol": 244.4,			//Supply voltage
-		"pri": 1,			//priority
+		"pri": 1,			//priority - with multiple Zappi
 		"cmt": 253,
 		"tbh": 9,			//boost hour?
 		"tbm": 15,			//boost minute?
 		"tbk": 90,			//boost KWh   - Note charge remaining for boost = tbk-che
-		"pst": "A",			//Status A=Disconnected, B1=Awaiting Surplus, B2=Charge Complete, C1= Transitory- unknown, C2= Charge Complete
-		"mgl": 100,
+		"pst": "A",			//Status A=EV Disconnected, B1=Awaiting Surplus, B2=Charge Complete, C1= Charge Starting, C2= Charge Complete, F = Fault
+		"mgl": 100,                     //Minimum Green Limit for Eco+ Mode
 		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+
 		"che": 1,			//Charge added in KWh
 		"sbh": 14,			//Smart Boost Start Time Hour
@@ -193,22 +202,25 @@ This gives us the basic data used on the app's main screen.   The app also makes
 	}]
 }
 ```
-  `/cgi-jstatus-H`  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
+  `/cgi-jstatus-H`  (for Harvi data)
   
 ```json
 {
   "harvi": [
     {
-      "sno": 10077777,
-      "dat": "07-06-2019",
-      "tim": "12:57:11",
-      "ectp1": 176,
-      "ectt1": "Grid",
-      "ectt2": "None",
-      "ectt3": "None",
-      "ect1p": 1,
-      "ect2p": 1,
-      "ect3p": 1
+      "sno": 10077777,       //Harvi Serial Number
+      "dat": "07-06-2019",   //Date 
+      "tim": "12:57:11",     //Time - UTC not timezone - Date and Time are time last update from devices was received 
+      "ectp1": 176,          //CT1 Watts
+      "ectp2": -18,          //CT2 Watts
+      "ectp3": 2128,         //CT3 Watts
+      "ectt1": "Grid",       //CT1 Name
+      "ectt2": "Generation", //CT2 Name
+      "ectt3": "AC Battery", //CT3 Name
+      "ect1p": 1,            //CT1 Status??
+      "ect2p": 1,            //CT2 Status??
+      "ect3p": 1,            //CT3 Status??
+      "fwv":   ""            //Firmware Version - is blank currently
     }
   ]
 }
@@ -726,6 +738,38 @@ All requests return this
 Each Eddi can have 2 heaters attached. To get which one is the current one that has priority call `/cgi-set-heater-priority-E10088888  `
 
 The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the second heater have priority
+
+## Return Codes 
+
+ODE	MEANING
+ 0	O.K. / Success
+-1	Invalid ID – The unit or group cannot be found or the user does not have access rights to the ID.
+-2	Invalid DSR command sequence number. Valid write values or 1-15 inclusive. Valid read values are 0-15 inclusive.
+-3	No action taken. Command Sequence Number “csn” equals “err” for single unit. i.e. Command Sequence number is same as last.
+-4	Hub not found. No associated hub record for the unit.
+-5	Internal Error.
+-6	Invalid load value.
+-7	Year missing.
+-8	Month missing or invalid.
+-9	Day missing or invalid.
+-10	Hour missing or invalid.
+-11	Invalid TTL Value.
+-12	User not authorised to perform operation.
+-13	Serial No not found.
+-14	Missing or bad parameter.
+-15	Invalid password.
+-16	New passwords don’t match.
+-17	Invalid new password. Password must not contain “&”
+-18	New password is same as old password.
+-19	User not registered.
+-20	Minute missing or invalid
+-21	Slot missing or invalid
+-22	Priority bad or missing
+-23	Command not appropriate for device
+-24	Check period bad or missing
+-25	Min Green Level bad or missing
+-26	Busy – Server is already sending a command to the device.
+-27	Relay not fitted.
 
 ## Still to come... 
 
