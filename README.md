@@ -32,7 +32,7 @@ A json response to the inital request to `/cgi-jstatus-E` can be obtained throug
 
 A simple curl command will do the same:
 
-`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>myenergi.net/cgi-jstatus-E'`
+`curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>.myenergi.net/cgi-jstatus-E'`
 
 
 ## Status Messages
