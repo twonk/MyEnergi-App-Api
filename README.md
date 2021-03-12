@@ -504,7 +504,8 @@ Data from later in the array as an example.
 		"yr": 2019,
 		"imp": 42900,
 		"exp": xxxxx,
-		"gep": 180,
+		"gen": 180,
+		"gep": xxxxx,
 		"h1d": xxxxx,
 		"h2d": xxxxx,
 		"h3d": xxxxx,
@@ -519,7 +520,8 @@ Data from later in the array as an example.
 		"yr": 2019,		//Year
 		"imp": 42900,		//Imported Joules this minute; divide by 60 get average Watts; divide by 3600000 to get kWh
 		"exp": xxxxx,		//Exported Joules
-		"gep": 180,		//Generated Joules; used to be "gen"?
+		"gen": 180,		//???
+		"gep": xxxxx,		//Generated Joules
 		"h1d": xxxxx,		//Phase 1 used Joules for charging
 		"h2d": xxxxx,		//Phase 2 used Joules for charging
 		"h3d": xxxxx,		//Phase 3 used Joules for charging
