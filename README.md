@@ -13,16 +13,18 @@ With thanks to members of the myenergi.info forum:
 who have contributed updates, and to the folks at MyEnergi who haven't officialy sanctioned this investigation but havent asked us to stop either.
 
 ## Tools Used
-  * Myenergi iOS app  (http://myenergi.info)
-  * Charles Proxy (https://www.charlesproxy.com)
+  * [Myenergi iOS app](http://myenergi.info)
+  * [Charles Proxy](https://www.charlesproxy.com)
 
 Charles Proxy is used as an SSL proxy between the app and the Myenergi server endpoint.
 
 ## Findings
 
-The app makes https requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
+The app makes https requests to the myenergi.net host using [Digest Authentication](https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
 
 **To build the base URL, get the last digit of the hub serial and make a base url like `https://s<lastdigit>.myenergi.net/`**
+
+The [New Approach](https://myenergi.info/viewtopic.php?p=29052#p29052) is that an first call to ```https://director.myenergi.net``` will give a x_myenergi-asn header back with the server URL.
 
 An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
 
@@ -144,10 +146,10 @@ The server responds with a json object:
 		ht2: "Tank 2",		//Heater 2 name	
 		pha: 3,			//phase number or number of phases?
 		pri: 2,			//priority
-		r1a: 1,			// Have never seen this in my status ?
-		r2a: 1,			// Have never seen this in my status ?
-		r2b: 1,			// Have never seen this in my status ?
-		sno: 10088888,           //Changed Eddi Serial Number		
+		r1a: 1,			// Have never seen this ? 
+		r2a: 1,			// Have never seen this  ?
+		r2b: 1,			// Have never seen this  ?
+		sno: 10088888,          //Changed Eddi Serial Number		
 		sta: 3,			//Status 1=Paused, 3=Diverting, 4=Boost, 5=Max Temp Reached, 6=Stopped
 		tim: "07:28:45",	//time	
 		tp1: 50,		//temperature probe 1 (50 C)
