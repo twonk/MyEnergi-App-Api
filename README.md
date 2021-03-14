@@ -128,35 +128,35 @@ The server responds with a json object:
 ```json
 {
 	"eddi": [{
-		che: 1			// total kWh tranferred this session (today?)
-		cmt: 254,		// Command Timer - counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any commands
-		dat: "07-06-2019",	//date	
-		div: 928,		//Diversion amount Watts
-		dst: 1			//Daylight Savings Time enabled
-		ectp1: -7,		//physical CT connection 1 value
-		ectp2: 6,		//physical CT connection 2 value
-		ectt1: "Grid",		//CT 1 name	
-		ectt2: "Generation",	//CT 2 name	
-		frq: 50.07,		//Supply Frequency
-		fwv: 1234,		//firmware version
-		gen: 2054,		//Generated Watts
-		grd: 969,		//Current Watts from Grid (negative if sending to grid)
-		hno: 1,			// Currently active heater (1/2)
-		ht1: "Tank 1",		//Heater 1 name	
-		ht2: "Tank 2",		//Heater 2 name	
-		pha: 3,			//phase number or number of phases?
-		pri: 2,			//priority
-		r1a: 1,			// Have never seen this ? 
-		r2a: 1,			// Have never seen this  ?
-		r2b: 1,			// Have never seen this  ?
-		sno: 10088888,          //Changed Eddi Serial Number		
-		sta: 3,			//Status 1=Paused, 3=Diverting, 4=Boost, 5=Max Temp Reached, 6=Stopped
-		tim: "07:28:45",	//time	
-		tp1: 50,		//temperature probe 1 (50 C)
-		tp2: -1,		//temperature probe 2
-		vol: 2395,		//Voltage out (divide by 10)
-                "bsm": 1,		// Boost Mode - 1 if boosting		
-                "rbt": 3600,		// If boosting, the remaining boost time in of seconds 		
+                "bsm": 1,		// Boost Mode - 1 if boosting
+		"che": 1		// total kWh tranferred this session (today?)
+		"cmt": 254,		// Command Timer - counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any commands
+		"dat": "07-06-2019",	//date
+		"div": 928,		//Diversion amount Watts
+		"dst": 1		//Daylight Savings Time enabled
+		"ectp1": -7,		//physical CT connection 1 value
+		"ectp2": 6,		//physical CT connection 2 value
+		"ectt1": "Grid",	//CT 1 name
+		"ectt2": "Generation",	//CT 2 name
+		"frq": 50.07,		//Supply Frequency
+		"fwv": 1234,		//firmware version
+		"gen": 2054,		//Generated Watts
+		"grd": 969,		//Current Watts from Grid (negative if sending to grid)
+		"hno": 1,		// Currently active heater (1/2)
+		"ht1": "Tank 1",	//Heater 1 name
+		"ht2": "Tank 2",	//Heater 2 name
+		"pha": 3,		//phase number or number of phases?
+		"pri": 2,		//priority
+		"r1a": 1,		// Have never seen this ? 
+		"r2a": 1,		// Have never seen this  ?
+		"r2b": 1,		// Have never seen this  ?
+                "rbt": 3600,		// If boosting, the remaining boost time in of seconds
+		"sno": 10088888,	//Changed Eddi Serial Number
+		"sta": 3,		//Status 1=Paused, 3=Diverting, 4=Boost, 5=Max Temp Reached, 6=Stopped
+		"tim": "07:28:45",	//time
+		"tp": 50,		//temperature probe 1 (50 C)
+		"tp2": -1,		//temperature probe 2
+		"vol": 2395,		//Voltage out (divide by 10)
 	}]
 }
 ```
@@ -168,41 +168,41 @@ This gives us the basic data used on the app's main screen.   The app also makes
 ```json
 {
 	"zappi": [{
-		che: 1,			//Charge added in KWh
-		cmt: 253,		//Command Timer- counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any comamnds
-		dat: "07-06-2019",	//Date	
-		div: 1376,		//Diversion amount Watts (does not appear if zero)
-		dst: 1,			// Use Daylight Savings Time
-		ectp1: 920,		//Physical CT connection 1 value Watts
-		ectp2: 2143,		//Physical CT connection 2 value Watts
-		ectp3: 2143,		//Physical CT connection 3 value Watts
-		ectp4: 2143,"		//Physical CT connection 4 value Watts
-		ectp5: 2143,		//Physical CT connection 5 value Watts
-		ectp6: 2143,"		//Physical CT connection 6 value Watts
-		ectt1: "Grid",		//CT 1 Name	
-		ectt2: "Generation",	//CT 2 Name	
-		ectt3: "",		//CT 3 Name
-		ectt4 "",		//CT 4 Name
-		frq: 49.95,		//Supply Frequency
-		fwv: 1234		//Firmware Version
-		gen: 2143,		//Generated Watts
-		grd: 1017,		//Watts from grid?
-		lck: 10,		//Lock Status (4 bits : 1st digit - ? : 2nd digit - 1 unlocked, 0 locked)
-		mgl: 100,		//Minimum Green Level
-		pha: 1,			// Phases
-		pri: 1,			//priority
-		pst: "A",		//Status A=EV Disconnected, B1=EV Connected, B2=Waiting for EV, C1=EV Ready to Charge, C2= Charging, F= Fault
-		sbh: 14,		//Smart Boost Start Time Hour
-		sbk: 5			//Smart Boost KWh to add
-		sbm: 15,		//Smart Boost Start Time Minute
-		sno: 10077777,        	//Changed Zappi Serial Number		
-		sta: 3,			//Status  1=Paused 3=Diverting/Charging 5=Complete
-		tbh: 9,			//boost hour?
-		tbk: 90,		//boost KWh   - Note charge remaining for boost = tbk-che
-		tbm: 15,		//boost minute?
-		tim: "07:28:46",	//Time	
-		vol: 244.4,		//Supply voltage
-		zmo: 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+, 4=Stopped
+		"che": 1,			//Charge added in KWh
+		"cmt": 253,		//Command Timer- counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any comamnds
+		"dat": "07-06-2019",	//Date	
+		"div": 1376,		//Diversion amount Watts (does not appear if zero)
+		"dst": 1,			// Use Daylight Savings Time
+		"ectp1": 920,		//Physical CT connection 1 value Watts
+		"ectp2": 2143,		//Physical CT connection 2 value Watts
+		"ectp3": 2143,		//Physical CT connection 3 value Watts
+		"ectp4": 2143,"		//Physical CT connection 4 value Watts
+		"ectp5": 2143,		//Physical CT connection 5 value Watts
+		"ectp6": 2143,"		//Physical CT connection 6 value Watts
+		"ectt1": "Grid",		//CT 1 Name	
+		"ectt2": "Generation",	//CT 2 Name	
+		"ectt3": " ",		//CT 3 Name
+		"ectt4": " ",		//CT 4 Name
+		"frq": 49.95,		//Supply Frequency
+		"fwv": 1234		//Firmware Version
+		"gen": 2143,		//Generated Watts
+		"grd": 1017,		//Watts from grid?
+		"lck": 10,		//Lock Status (4 bits : 1st digit - ? : 2nd digit - 1 unlocked, 0 locked)
+		"mgl": 100,		//Minimum Green Level
+		"pha": 1,			// Phases
+		"pri": 1,			//priority
+		"pst": "A",		//Status A=EV Disconnected, B1=EV Connected, B2=Waiting for EV, C1=EV Ready to Charge, C2= Charging, F= Fault
+		"sbh": 14,		//Smart Boost Start Time Hour
+		"sbk": 5			//Smart Boost KWh to add
+		"sbm": 15,		//Smart Boost Start Time Minute
+		"sno": 10077777,        	//Changed Zappi Serial Number		
+		"sta": 3,			//Status  1=Paused 3=Diverting/Charging 5=Complete
+		"tbh": 9,			//boost hour?
+		"tbk": 90,		//boost KWh   - Note charge remaining for boost = tbk-che
+		"tbm": 15,		//boost minute?
+		"tim": "07:28:46",	//Time	
+		"vol": 244.4,		//Supply voltage
+		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+, 4=Stopped
 	}]
 }
 
