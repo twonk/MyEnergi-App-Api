@@ -205,6 +205,7 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+, 4=Stopped
 	}]
 }
+```
 
 Lock Status
 
