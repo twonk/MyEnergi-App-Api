@@ -176,9 +176,9 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"ectp1": 920,		//Physical CT connection 1 value Watts
 		"ectp2": 2143,		//Physical CT connection 2 value Watts
 		"ectp3": 2143,		//Physical CT connection 3 value Watts
-		"ectp4": 2143,"		//Physical CT connection 4 value Watts
+		"ectp4": 2143,		//Physical CT connection 4 value Watts
 		"ectp5": 2143,		//Physical CT connection 5 value Watts
-		"ectp6": 2143,"		//Physical CT connection 6 value Watts
+		"ectp6": 2143,		//Physical CT connection 6 value Watts
 		"ectt1": "Grid",		//CT 1 Name	
 		"ectt2": "Generation",	//CT 2 Name	
 		"ectt3": " ",		//CT 3 Name
