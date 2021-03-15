@@ -13,16 +13,18 @@ With thanks to members of the myenergi.info forum:
 who have contributed updates, and to the folks at MyEnergi who haven't officialy sanctioned this investigation but havent asked us to stop either.
 
 ## Tools Used
-  * Myenergi iOS app  (http://myenergi.info)
-  * Charles Proxy (https://www.charlesproxy.com)
+  * [Myenergi iOS app](http://myenergi.info)
+  * [Charles Proxy](https://www.charlesproxy.com)
 
 Charles Proxy is used as an SSL proxy between the app and the Myenergi server endpoint.
 
 ## Findings
 
-The app makes https requests to the myenergi.net host using Digest Authentication (https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
+The app makes https requests to the myenergi.net host using [Digest Authentication](https://en.wikipedia.org/wiki/Digest_access_authentication) using the qop directive as "auth"
 
 **To build the base URL, get the last digit of the hub serial and make a base url like `https://s<lastdigit>.myenergi.net/`**
+
+The [New Approach](https://myenergi.info/viewtopic.php?p=29052#p29052) is that an first call to ```https://director.myenergi.net``` will give a x_myenergi-asn header back with the server URL.
 
 An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
 
@@ -126,33 +128,35 @@ The server responds with a json object:
 ```json
 {
 	"eddi": [{
-		"dat": "07-06-2019",		//date
-		"tim": "07:28:45",		//time
-		"div": 928,			//Diversion amount Watts (does not appear if zero)
-		"ectp1": -7,			//physical CT connection 1 value
-		"ectp2": 6,			//physical CT connection 2 value
-		"ectt1": "Grid",		//CT 1 name
-		"ectt2": "Generation",		//CT 2 name
-		"frq": 50.07,			//Supply Frequency
-		"gen": 2054,			//Generated Watts
-		"grd": 969,			//Current Watts from Grid (negative if sending to grid)
-		"hno": 1,           // Currently active heater (1/2)
-		"pha": 3,			//phase number or number of phases?
-		"sno": 10088888,      	//Changed Eddi Serial Number
-		"sta": 3,                       //Status 1=Paused, 3=Diverting, 4=Boost, 5=Stopped/Max Temp Reached
-		"vol": 239.5,             //Voltage out
-		"ht1": "Tank 1",		//Heater 1 name
-		"ht2": "Tank 2",		//Heater 2 name
-		"tp1": -1,
-		"tp2": -1,
-		"pri": 2,			//priority>
-		"cmt": 254,
-		"r1a": 1,
-		"r2a": 1,
-		"r2b": 1,
-		"che": 1			//charge added in KWH
-        "bsm": 1,           // 1 if boosting
-        "rbt": 3600,        // If boosting, the remaining boost time in of seconds 
+                "bsm": 1,		// Boost Mode - 1 if boosting
+		"che": 1		// total kWh tranferred this session (today?)
+		"cmt": 254,		// Command Timer - counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any commands
+		"dat": "07-06-2019",	//date
+		"div": 928,		//Diversion amount Watts
+		"dst": 1		//Daylight Savings Time enabled
+		"ectp1": -7,		//physical CT connection 1 value
+		"ectp2": 6,		//physical CT connection 2 value
+		"ectt1": "Grid",	//CT 1 name
+		"ectt2": "Generation",	//CT 2 name
+		"frq": 50.07,		//Supply Frequency
+		"fwv": 1234,		//firmware version
+		"gen": 2054,		//Generated Watts
+		"grd": 969,		//Current Watts from Grid (negative if sending to grid)
+		"hno": 1,		// Currently active heater (1/2)
+		"ht1": "Tank 1",	//Heater 1 name
+		"ht2": "Tank 2",	//Heater 2 name
+		"pha": 3,		//phase number or number of phases?
+		"pri": 2,		//priority
+		"r1a": 1,		// Have never seen this ? 
+		"r2a": 1,		// Have never seen this  ?
+		"r2b": 1,		// Have never seen this  ?
+                "rbt": 3600,		// If boosting, the remaining boost time in of seconds
+		"sno": 10088888,	//Changed Eddi Serial Number
+		"sta": 3,		//Status 1=Paused, 3=Diverting, 4=Boost, 5=Max Temp Reached, 6=Stopped
+		"tim": "07:28:45",	//time
+		"tp": 50,		//temperature probe 1 (50 C)
+		"tp2": -1,		//temperature probe 2
+		"vol": 2395,		//Voltage out (divide by 10)
 	}]
 }
 ```
@@ -164,34 +168,61 @@ This gives us the basic data used on the app's main screen.   The app also makes
 ```json
 {
 	"zappi": [{
-		"dat": "07-06-2019",		//Date
-		"tim": "07:28:46",		//Time
-		"div": 1376,			//Diversion amount Watts (does not appear if zero)
-		"ectp1": 920,			//Physical CT connection 1 value Watts
-		"ectp2": 2143,			//Physical CT connection 2 value Watts
-		"ectt1": "Grid",		//CT 1 Name
-		"ectt2": "Generation",		//CT 2 Name
-		"frq": 49.95,			//Supply Frequency
-		"gen": 2143,			//Generated Watts
-		"grd": 1017,			//Watts from grid?
-		"pha": 1,
-		"sno": 10077777,        //Changed Zappi Serial Number
-		"sta": 3,                       //Status  1=Paused 3=Diverting/Charging 5=Complete
-		"vol": 244.4,			//Supply voltage
-		"pri": 1,			//priority
-		"cmt": 253,
-		"tbh": 9,			//boost hour?
-		"tbm": 15,			//boost minute?
-		"tbk": 90,			//boost KWh   - Note charge remaining for boost = tbk-che
-		"pst": "A",			//Status A=Disconnected, B1=Awaiting Surplus, B2=Charge Complete, C1= Transitory- unknown, C2= Charge Complete
-		"mgl": 100,
-		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+
 		"che": 1,			//Charge added in KWh
-		"sbh": 14,			//Smart Boost Start Time Hour
-		"sbm": 15,			//Smart Boost Start Time Minute
+		"cmt": 253,		//Command Timer- counts 1 - 10 when command sent, then 254 - success, 253 - failure, 255 - never received any comamnds
+		"dat": "07-06-2019",	//Date	
+		"div": 1376,		//Diversion amount Watts (does not appear if zero)
+		"dst": 1,			// Use Daylight Savings Time
+		"ectp1": 920,		//Physical CT connection 1 value Watts
+		"ectp2": 2143,		//Physical CT connection 2 value Watts
+		"ectp3": 2143,		//Physical CT connection 3 value Watts
+		"ectp4": 2143,		//Physical CT connection 4 value Watts
+		"ectp5": 2143,		//Physical CT connection 5 value Watts
+		"ectp6": 2143,		//Physical CT connection 6 value Watts
+		"ectt1": "Grid",		//CT 1 Name	
+		"ectt2": "Generation",	//CT 2 Name	
+		"ectt3": " ",		//CT 3 Name
+		"ectt4": " ",		//CT 4 Name
+		"frq": 49.95,		//Supply Frequency
+		"fwv": 1234		//Firmware Version
+		"gen": 2143,		//Generated Watts
+		"grd": 1017,		//Watts from grid?
+		"lck": 10,		//Lock Status (4 bits : 1st digit - ? : 2nd digit - 1 unlocked, 0 locked)
+		"mgl": 100,		//Minimum Green Level
+		"pha": 1,			// Phases
+		"pri": 1,			//priority
+		"pst": "A",		//Status A=EV Disconnected, B1=EV Connected, B2=Waiting for EV, C1=EV Ready to Charge, C2= Charging, F= Fault
+		"sbh": 14,		//Smart Boost Start Time Hour
 		"sbk": 5			//Smart Boost KWh to add
+		"sbm": 15,		//Smart Boost Start Time Minute
+		"sno": 10077777,        	//Changed Zappi Serial Number		
+		"sta": 3,			//Status  1=Paused 3=Diverting/Charging 5=Complete
+		"tbh": 9,			//boost hour?
+		"tbk": 90,		//boost KWh   - Note charge remaining for boost = tbk-che
+		"tbm": 15,		//boost minute?
+		"tim": "07:28:46",	//Time	
+		"vol": 244.4,		//Supply voltage
+		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+, 4=Stopped
 	}]
 }
+```
+
+Lock Status
+
+'lck' - representation of current PIN lock settings and zappi lock status
+Bit 0: Locked Now
+Bit 1: Lock when plugged in
+Bit 2: Lock when unplugged.
+Bit 3: Charge when locked.
+Bit 4: Charge Session Allowed (Even if locked)
+
+Note that charging will be allowed if:-
+Locked Now=0
+or
+Locked Now=1 and Charge When Locked=1
+or
+Charge Session Allowed=1
+
 ```
   `/cgi-jstatus-H`  (For Harvi data) - I do have a harvi, but removed it from my installation and ran cat5 to the zappi.
   
@@ -524,7 +555,7 @@ Data from later in the array as an example.
 
 ####  Hourly
 
-##### Eddie
+##### Eddi
 
 `/cgi-jdayhour-E10088888-2019-6-7`
 
@@ -700,8 +731,8 @@ returns
 ### Eddi Manual boost
 
 Eddi can be set to boost - Example endpoints.  Serial numbers are included in the URL - be sure to replace 10088888 with your Eddi Serial Number. The other options are:
-- 10 - Max KW to boost to (?)
-- 1/2 - heater number
+- 10 - Start Manual Boost 
+- 1/2 - heater number (or 11/12 for Relay 1/2)
 - minutes (set to 0 to cancel)
 
 #### 20 minute manual boost
@@ -712,6 +743,12 @@ Eddi can be set to boost - Example endpoints.  Serial numbers are included in th
 
 #### Cancel boost
 `/cgi-eddi-boost-E10088888-1-1-0`
+
+#### Eddi to Stopped
+`/cgi-eddi-mode-E10088888-0`
+
+#### Eddi to Normal
+`/cgi-eddi-mode-E10088888-1`
 
 All requests return this
 ```json
