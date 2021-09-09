@@ -24,6 +24,8 @@ The app makes https requests to the myenergi.net host using [Digest Authenticati
 
 **To build the base URL, get the last digit of the hub serial and make a base url like `https://s<lastdigit>.myenergi.net/`**
 
+**New server migration** _if you are on the new server then your URL will be `https://s18.myenergi.net/`. Calling Director will always confirm your correct URL._
+
 The [New Approach](https://myenergi.info/viewtopic.php?p=29052#p29052) is that an first call to ```https://director.myenergi.net``` will give a x_myenergi-asn header back with the server URL.
 
 An initial request is made to `/cgi-jstatus-E` the server responds with a status 401 Unauthorized and requests authentication returning the realm: "MyEnergi Telemetry", qop: "auth", an initial nonce, a Stale flag, and algorithm: "MD5"
