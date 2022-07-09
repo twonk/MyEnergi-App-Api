@@ -690,6 +690,9 @@ No data.
 
 To change the Zappi mode between Fast, Eco, Eco+  call these endpoints.   Serial numbers are included in the URL - be sure to replace 10077777 with your Zappi Serial Number
 
+#### Unlock Charger (start charging)
+`/cgi-jlock-10077777-01000000`
+
 #### Fast
 `/cgi-zappi-mode-Z10077777-1-0-0-0000`
 
@@ -698,6 +701,9 @@ To change the Zappi mode between Fast, Eco, Eco+  call these endpoints.   Serial
 
 #### Eco+
 `/cgi-zappi-mode-Z10077777-3-0-0-0000`
+
+#### Stop
+`/cgi-zappi-mode-Z10077777-4-0-0-0000`
 
 #### Boost 5KWh
 `/cgi-zappi-mode-Z10077777-0-10-5-0000`
