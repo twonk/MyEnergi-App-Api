@@ -77,6 +77,55 @@ Example response:
          }
       ]
    },
+   {
+      "libbi":[
+         {
+	    "deviceClass": "LIBBI",
+	    "sno": 20005555,
+	    "dat": "01-09-2024",
+	    "tim": "15:26:00",
+	    "ectp1": -729,
+	    "ectp2": -68,
+	    "ectp3": 0,
+	    "ectt1": "Internal Load",
+	    "ectt2": "Grid",
+	    "ectt3": "None",
+	    "ectp4": 0,
+	    "ectp5": 148,
+	    "ectt4": "None",
+	    "ectt5": "DCPV",
+	    "ectt6": "None",
+	    "dst": 1,
+	    "tz": 0,
+	    "lmo": "BALANCE",
+	    "sta": 6,
+	    "frq": 49.87,
+	    "pri": 1,
+	    "soc": 86,
+	    "isp": true,
+	    "pha": 1,
+	    "vol": 2414,
+	    "mbc": 10200,
+	    "mic": 5000,
+	    "gen": 148,
+	    "grd": -58,
+	    "div": -729,
+	    "ect1p": 1,
+            "ect2p": 1,
+	    "ect3p": 1,
+	    "batteryDischargingBoost": false,
+	    "pvDirectlyConnected": true,
+	    "g100LockoutState": "NONE",
+	    "countryCode": "GBR",
+	    "isVHubEnabled": true,
+	    "cmt": 254,
+	    "fwv": "3702S5.433",
+	    "newAppAvailable": false,
+	    "newBootloaderAvailable": false,
+	    "productCode": "3702"
+	 }
+      ]
+   },
    { 
       "zappi":[ 
          { 
@@ -205,6 +254,59 @@ This gives us the basic data used on the app's main screen.   The app also makes
 		"tim": "07:28:46",	//Time	
 		"vol": 244.4,		//Supply voltage
 		"zmo": 3,			//Zappi Mode - 1=Fast, 2=Eco, 3=Eco+, 4=Stopped
+	}]
+}
+```
+And also makes calls to 
+
+  `/cgi-jstatus-L`  (For Libbi data)
+  
+```json
+{
+	"libbi": [{
+		"deviceClass": "LIBBI",
+		"sno": 20005555,
+		"dat": "01-09-2024",
+		"tim": "15:50:18",
+		"ectp1": -334,
+		"ectp2": 80,
+		"ectp3": 0,
+		"ectt1": "Internal Load",
+		"ectt2": "Grid",
+		"ectt3": "None",
+		"ectp4": 0,
+		"ectp5": 187,
+		"ectt4": "None",
+		"ectt5": "DCPV",
+		"ectt6": "None",
+		"dst": 1,
+		"tz": 0,
+		"lmo": "BALANCE",
+		"sta": 6,
+		"frq": 50,
+		"pri": 1,
+		"soc": 83,
+		"isp": true,
+		"pha": 1,
+		"vol": 2388,
+		"mbc": 10200,
+		"mic": 5000,
+		"gen": 124,
+		"grd": -58,
+		"div": -334,
+		"ect1p": 1,
+		"ect2p": 1,
+		"ect3p": 1,
+		"batteryDischargingBoost": false,
+		"pvDirectlyConnected": true,
+		"g100LockoutState": "NONE",
+		"countryCode": "GBR",
+		"isVHubEnabled": true,
+		"cmt": 254,
+		"fwv": "3702S5.433",
+		"newAppAvailable": false,
+		"newBootloaderAvailable": false,
+		"productCode": "3702"
 	}]
 }
 ```
@@ -441,6 +543,62 @@ Tapping the Zappi or Eddi icon on the main screen causes the app to call new end
 	}]
 }
 ```
+### Libbi 
+`/cgi-jstatus-L20005555`
+
+```json
+{
+	"libbi": [{
+		"deviceClass": "LIBBI",
+		"sno": 20005555,
+		"dat": "01-09-2024",
+		"tim": "15:50:38",
+		"ectp1": -363,
+		"ectp2": -82,
+		"ectp3": 0,
+		"ectt1": "Internal Load",
+		"ectt2": "Grid",
+		"ectt3": "None",
+		"ectp4": 0,
+		"ectp5": 50,
+		"ectt4": "None",
+		"ectt5": "DCPV",
+		"ectt6": "None",
+		"dst": 1,
+		"tz": 0,
+		"lmo": "BALANCE",
+		"sta": 6,
+		"frq": 50.01,
+		"pri": 1,
+		"soc": 83,
+		"isp": true,
+		"pha": 1,
+		"vol": 2403,
+		"mbc": 10200,
+		"mic": 5000,
+		"gen": 50,
+		"grd": -58,
+		"div": -363,
+		"ect1p": 1,
+		"ect2p": 1,
+		"ect3p": 1,
+		"batteryDischargingBoost": false,
+		"pvDirectlyConnected": true,
+		"g100LockoutState": "NONE",
+		"countryCode": "GBR",
+		"isVHubEnabled": true,
+		"cmt": 254,
+		"fwv": "3702S5.433",
+		"newAppAvailable": false,
+		"newBootloaderAvailable": false,
+		"productCode": "3702"
+	}]
+}
+```
+### Libbi Set Charge from Grid level
+`/api/AccountAccess/20005555/TargetEnergy?targetEnergy=<chargelevel>`
+- charge level is desired percentage * 92, e.g. 100% = 9200, 50% = 4600
+
 
 ### Historic Data
 
