@@ -902,6 +902,34 @@ returns
 }
 ```
 
+### Set number of Phases for Eco+ mode
+#### 3 Phases
+
+`/cgi-zappi-phase-setting-Z10077777-1`
+ returns
+ ```json
+ {"status":"0","statustext":""}
+```
+
+After this => /cgi-jstatus-Z10077777 "phaseSetting" = "THREE_PHASE"
+
+#### 1 Phase
+`/cgi-zappi-phase-setting-Z10077777-0`
+returns
+ ```json
+ {"status":"0","statustext":""}
+```
+
+After this => /cgi-jstatus-Z10077777 "phaseSetting" = "SINGLE_PHASE"
+
+#### "Auto" Phases
+`/cgi-zappi-phase-setting-Z10077777-2`
+returns
+ ```json
+ {"status":"0","statustext":""}
+```
+
+After this => /cgi-jstatus-Z10077777 "phaseSetting" = "AUTO"
 
 
 ### Eddi Manual boost
