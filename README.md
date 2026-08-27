@@ -38,6 +38,209 @@ A simple curl command will do the same:
 
 `curl --digest -u **HUB**:**PASSWORD** -H 'accept: application/json' -H 'content-type: application/json'  --compressed 'https://s<lastdigit>.myenergi.net/cgi-jstatus-E'`
 
+## Account ChargeSchedules API
+
+> This is a separate, authenticated web-account API used by
+> `https://myaccount.myenergi.com/schedules`. It is not the legacy digest-auth
+> device API documented below. In particular, a **Single Charge** is not a
+> legacy Zappi Smart Boost.
+
+The web portal describes Single Charge as a one-off, date-specific request to
+add an amount of charge by a specified time, with the cheapest times selected
+according to the configured tariff. The portal warns that saving Single Charge
+settings overrides existing schedules on that Zappi.
+
+All examples below use a bearer token from a signed-in MyEnergi web-account
+session. Do not store or publish the token. Responses use a common envelope:
+
+```json
+{
+  "status": true,
+  "message": "",
+  "field": "",
+  "content": {}
+}
+```
+
+### Read schedules
+
+`GET https://myaccount.myenergi.com/api/ChargeSchedules/GetAllSchedules`
+
+The response is grouped by hub and then device. Each Zappi can have independent
+recurring (`scheduleCharges`), budget (`budgetCharges`), and one-off
+(`singleCharges`) collections. `singleChargesActive` is a boolean on the device,
+not an individual Single Charge status.
+
+```json
+{
+  "status": true,
+  "content": [
+    {
+      "hubId": "<hub-id>",
+      "hubNickName": "<hub-name>",
+      "energySetupProvider": "Octopus Energy",
+      "energySetupTarrif": "AGILE-24-10-01",
+      "isEconomy": false,
+      "isGuestUser": false,
+      "devices": [
+        {
+          "deviceId": "<zappi-device-id>",
+          "deviceName": "<zappi-name>",
+          "deviceType": "zappi",
+          "firmware": "<firmware>",
+          "scheduleCharges": [],
+          "scheduleChargesActive": false,
+          "budgetCharges": [],
+          "budgetChargesActive": false,
+          "singleCharges": [
+            {
+              "id": "<single-charge-id>",
+              "scheduleType": "Single",
+              "scheduleNickName": "API test - remove",
+              "chargingOutputName": "<vehicle-profile-id>",
+              "chargeAmountMinutes": 27,
+              "fromTime": "16:00",
+              "toTime": "17:00",
+              "singleChargeDay": "08/27/2026",
+              "isActive": true,
+              "chargeAmountKWh": 5
+            }
+          ],
+          "singleChargesActive": true,
+          "isGuestUser": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+`id` is assigned by the server and is stable across an update. The returned
+Single Charge has no vehicle object and no `power` field; use
+`chargingOutputName` to associate it with a vehicle profile.
+
+### Read form prerequisites
+
+`GET https://myaccount.myenergi.com/api/ChargeSchedules/DisplaySchedules?hubId=<hub-id>`
+
+This currently returns whether a tariff response is available:
+
+```json
+{
+  "status": true,
+  "content": {
+    "hasTariffResponse": true
+  }
+}
+```
+
+Vehicle profiles are read separately:
+
+`GET https://myaccount.myenergi.com/api/Vehicle/UserVehicles`
+
+```json
+{
+  "status": true,
+  "content": [
+    {
+      "id": "<vehicle-profile-id>",
+      "manufacturer": "Volkswagen",
+      "model": "Other",
+      "batterySize": 86.0,
+      "chargeRate": 11.0,
+      "manufacturerOfficialEVRange": 473.05,
+      "realEVRange": 378.12,
+      "manufacturingYear": 2025,
+      "ownership": 1
+    }
+  ]
+}
+```
+
+The Single Charge UI bounds its kWh slider by `batterySize`; an 86 kWh profile
+therefore displays a 0--86 kWh range. It calculates
+`chargeAmountMinutes` as `round(chargeAmountKWh / chargeRate * 60)`: 5 kWh at
+11 kW produced 27 minutes and 4 kWh produced 22 minutes. The API does not
+accept live vehicle SoC, report charging losses, or expose battery-efficiency
+calculations. `chargeAmountKWh` is the requested charge amount, not a target
+battery-content/SoC value.
+
+### Create, update, and delete a Single Charge
+
+`POST https://myaccount.myenergi.com/api/ChargeSchedules/SaveSchedules`
+
+The request has `Authorization: Bearer <web-account-token>` and
+`Content-Type: application/json`. A Single Charge save replaces the complete
+Single Charge collection for one Zappi; it does not PATCH one item. A create
+omits `id`:
+
+```json
+{
+  "chargeSchedules": [
+    {
+      "scheduleNickName": "API test - remove",
+      "vehicle": {
+        "id": "<vehicle-profile-id>",
+        "manufacturer": "Volkswagen",
+        "model": "Other",
+        "batterySize": 86,
+        "chargeRate": 11
+      },
+      "power": 5,
+      "singleChargeDay": "27-08-2026",
+      "fromTime": "16:00",
+      "toTime": "17:00",
+      "chargeAmountMinutes": 27,
+      "chargingOutputName": "<vehicle-profile-id>",
+      "scheduleType": "Single",
+      "chargeAmountKWh": 5
+    }
+  ],
+  "deviceId": "<zappi-device-id>",
+  "isActive": true,
+  "scheduleType": "Single"
+}
+```
+
+The server returns the full saved collection, assigns an `id`, and normalises
+`singleChargeDay` from request format `DD-MM-YYYY` to response format
+`MM/DD/YYYY`. To update, post the same complete collection with the existing
+item `id`; changing 5 kWh to 4 kWh also required the calculated
+`chargeAmountMinutes` to change from 27 to 22. To delete/cancel all Single
+Charges for a Zappi, post:
+
+```json
+{
+  "chargeSchedules": [],
+  "deviceId": "<zappi-device-id>",
+  "isActive": true,
+  "scheduleType": "Single"
+}
+```
+
+The response contains an empty `chargeSchedules` array, and a subsequent
+`GetAllSchedules` returns `singleCharges: []`. There is no observed individual
+delete endpoint or delete flag.
+
+The portal accepts schedule names of 1--24 characters. It validates that kWh is
+at least 1, the date is between today and two years ahead, and the requested
+times are not in the past. Its frontend has no validation against the published
+Agile-price horizon. Whether the server accepts, defers, estimates, or rejects
+a deadline outside available tariff prices has not been tested and must not be
+assumed.
+
+### Safe automation guidance
+
+Read the complete Zappi `singleCharges` collection immediately before writing.
+Match an automation-owned entry by an explicit reserved `scheduleNickName`
+prefix, `chargingOutputName`, date, and desired completion window. If it is
+equivalent, do nothing; if it is obsolete, replace that entry in the complete
+collection while preserving manually-created entries. If an expected
+automation-owned item is absent, append a new item without `id`. Because the
+API exposes no dedicated metadata/tag field, avoid changing entries whose name
+does not use the reserved prefix, and serialise writes per Zappi to prevent a
+read-modify-write race from deleting another client's change.
+
 
 ## Status Messages
 
@@ -974,5 +1177,4 @@ The priority can be set like `/cgi-set-heater-priority-E10088888-2` to make the 
   *  Zappi manual / smart / timed boosts - will need to wait for new firmware as App shows car not connected, and will not allow manipulation.
   
   
-
 
